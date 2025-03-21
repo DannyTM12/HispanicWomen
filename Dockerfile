@@ -1,6 +1,13 @@
 # Usa una imagen base de Python (puedes elegir la versión que necesites)
 FROM python:3.9-slim-buster
 
+# Instala las dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    chromium \
+    chromium-driver
+
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
