@@ -8,7 +8,7 @@ import time
 def connection_example(cadena):
     # Configuración de opciones para el navegador (modo headless)
     options = Options()
-    options.add_argument('--headless')  # Ejecuta el navegador en segundo plano
+    # options.add_argument('--headless')  # Ejecuta el navegador en segundo plano
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
