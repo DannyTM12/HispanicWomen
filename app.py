@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request
-from scripts.connections import connection_example, connection_login
-
+from scripts.connections import connection_example, ingresar_login
 app = Flask(__name__)
 
 @app.route('/')
 def root():
-    return 'Bien!'
+    return render_template("index.html")
 
 @app.route('/prueba')
 def prueba():
@@ -17,7 +16,14 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        return connection_login(username,password)
+        credencialesValidas,driver = ingresar_login(username,password)
+
+        if credencialesValidas:
+            driver.quit()
+            return "Sesion iniciada con exito!"
+        else:
+            return "Credenciales incorrectas."
+
 
     return render_template("login.html")
 

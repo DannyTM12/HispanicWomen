@@ -59,11 +59,15 @@ def revisar_credenciales(driver,username,password):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys(username)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys(password + Keys.RETURN)
         # Esperar a que cargue el dashboard
-        WebDriverWait(driver, 15).until(EC.url_contains("/home"))
+        WebDriverWait(driver, 20).until(EC.url_contains("/home"))
         return True
     except TimeoutException:
         return False
     
+def ingresar_pin(driver,pin):
+    """
+        Ingresa el pin para validar la caja, en caso de ser incorrecto
+    """
 
 def ingresar_caja(driver):
     """
@@ -77,25 +81,40 @@ def ingresar_caja(driver):
     if modalCaja and modalCaja.is_displayed():
 
         # encontramos el componente selector para sucursal
-        componenteSelectorSucursal = encontrar_componentes.encontrarSelector(modalCaja, "selectSucursal")
+        componenteSelectorSucursal = encontrar_componentes.encontrarComponenteID(modalCaja, "selectSucursal")
 
         if componenteSelectorSucursal:
             selectorSucursal = Select(componenteSelectorSucursal)
             
-            selectorSucursal.select_by_index(1)
+            selectorSucursal.select_by_index(2)
             time.sleep(2)
+
+            # encontramos el componente selector para caja
+            componenteSelectorCaja = encontrar_componentes.encontrarComponenteID(modalCaja, "selectCaja")
+
+            if componenteSelectorCaja:
+                selectorCaja = Select(componenteSelectorCaja)
+            
+                selectorCaja.select_by_index(1)
+                time.sleep(2)
+
+
 
             # driver.quit()
             return "seleccionado!"
+        
+
 
         else:
             return "No se encontro selectorSucursal"
 
     return "modal caja desplegado"
 
-def connection_login(username,password):
+def ingresar_login(username,password):
     """
-        Recibe el username y la contrasena del usuario.
+        Recibe el username y la contrasena del usuario. Inicia sesion,
+        si es valido retorna True junto con el driver, de lo contrario,
+        retorna False y el valor del driver es None.
     """
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
@@ -119,15 +138,9 @@ def connection_login(username,password):
     driver.get(url_login)
     
     if revisar_credenciales(driver,username, password):
-
-        ingresar_caja(driver)
+        return True, driver
 
     else: 
         driver.quit()
-        return "Credenciales incorrectas."
+        return False, None
     
-
-
-    # Cerrar navegador al final
-    # driver.quit()
-    return "Login, finalizado!"

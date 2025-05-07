@@ -14,10 +14,10 @@ def encontrarModalCaja(driver):
     except NoSuchElementException:
         return None
     
-def encontrarSelector(Padre,cadena_id):
+def encontrarComponenteID(Padre,cadena_id):
     """
-        A partir del padre, busca el selector por ID. Si la encuentra retorna el componente, 
-        de lo contrarioNone.
+        A partir del padre, busca el componente por ID. Si la encuentra retorna el componente, 
+        de lo contrario None.
     """
     try:
         selector= Padre.find_element(By.ID, cadena_id)
