@@ -39,14 +39,11 @@ def iniciar_driver():
                 # with 2 should disable notifications
             },
         )
-
-        options.add_experimental_option("prefs", {"profile.default_content_setting_values.notifications": 2}) 
-
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
-        return driver, "Driver iniciado!"
+        return driver
+    
     except Exception as e:
-        return None, f"Ha ocurrido un error: {e}"
+        return None
 
 # ------------------------------- Login ------------------------------
 
@@ -61,7 +58,7 @@ def revisar_credenciales(driver, username, password):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys(username)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys(password + Keys.RETURN)
         # Esperar a que cargue el dashboard
-        WebDriverWait(driver, 20).until(EC.url_contains("/home"))
+        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
         return True
     except TimeoutException:
         return False
@@ -89,10 +86,12 @@ def obtener_componentes_caja(driver):
         la caja. Se obtienen los valores de los selectores.
         En caso de no encontrar el modal ser retorna None.
     """
+    # esperamos a que se encuentre en home
+    WebDriverWait(driver, 10).until(EC.url_contains("/home"))
     # buscar el modal para seleccionar caja
     modalCaja = encontrar_componentes.encontrarModalCaja(driver)
 
-    if modalCaja and modalCaja.is_displayed():
+    if modalCaja:
 
         # almacenamos los valores de los selectores
         valoresSelectores = {}
@@ -121,7 +120,7 @@ def obtener_componentes_caja(driver):
 
                     selectCaja = Select(componenteSelectorCaja)
 
-                    for opcion_caja in selectCaja:
+                    for opcion_caja in selectCaja.options:
 
                         if opcion_caja.get_attribute("disabled"):
                             # si la opcion no esta disponible

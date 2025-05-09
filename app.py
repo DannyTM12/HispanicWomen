@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
-from scripts.connections import iniciar_driver, connection_example, ingresar_login, obtener_componentes_caja
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from scripts.connections import connection_example, ingresar_login, obtener_componentes_caja
+
+from cls_webdriver import WebDriverManager
+
 app = Flask(__name__)
 
-# webdriver de la aplicacion
-app_driver = None
+# --------------------- Aplicacion -------------------
 
 @app.route('/')
 def root():
@@ -20,17 +22,17 @@ def login():
         password = request.form.get("password")
 
         # iniciamos el driver
-        app_driver, mensajes = iniciar_driver()
+        driver = WebDriverManager.get_driver()
 
-        if app_driver:
-            if ingresar_login(username,password):
+        if driver:
+            if ingresar_login(driver, username, password):
                 return redirect(url_for('ingresar_caja'))
             else:
-                app_driver.quit()
+                WebDriverManager.close_driver()
                 return "Credenciales incorrectas."
         else:
             # si no se pudo iniciar el driver
-            return mensajes
+            return "Hubo un error al iniciar el driver."
 
 
     return render_template("login.html")
@@ -38,9 +40,19 @@ def login():
 @app.route('/caja', methods=["GET","POST"])
 def ingresar_caja():
 
+    driver = WebDriverManager.get_driver()
 
+    if driver:
+        valorSelectores = obtener_componentes_caja(driver)
 
-    return "ingresar caja"
+        if valorSelectores:
+            WebDriverManager.close_driver()
+            return jsonify(valorSelectores)
+        else:
+            return "No se encontro modal."
+    else:
+        WebDriverManager.close_driver()
+        return "Hubo un error al obtener driver."
 
 if __name__ == '__main__':
     app.run(port="9000",host="0.0.0.0",debug=True)
