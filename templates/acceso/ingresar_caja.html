@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Caja</title>
+
+    {% include "componentes/_bootstrap.html" %}
+</head>
+<body>
+    <h1>Registrar Caja</h1>
+
+    <div class="container w-50">
+        
+        <select id="selectorSucursal" name="selectorSucursal" class="form-select">
+        </select>    
+
+        <select id="selectorCaja" name="selectorCaja" class="form-select">
+        </select>  
+    </div>
+    
+    <!-- div datos de selectores -->
+    <div id="selectores-data" data-selectores='{{ selectores|tojson }}''></div>
+
+    <script src="static/acceso/selectores.js"></script>
+
+</body>
+</html>

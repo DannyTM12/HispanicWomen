@@ -106,28 +106,24 @@ def obtener_componentes_caja(driver):
 
             for index, opcion_sucursal in enumerate(selectSucursal.options):
 
-                # almacenamos la opcion
-                valoresSelectores[f"{opcion_sucursal.text}"] = []
+                valoresSelectores[opcion_sucursal.text] = []
 
-                # seleccionamos la opcion actual
                 selectSucursal.select_by_index(index)
 
-                # encontramos el selector de caja con las opciones para esta sucursal
+                # buscamos el componente una vez seleccionado la sucursal
                 componenteSelectorCaja = encontrar_componentes.encontrarComponenteID(modalCaja, "selectCaja")
 
-                # si encuentra el selector caja
                 if componenteSelectorCaja:
 
                     selectCaja = Select(componenteSelectorCaja)
 
                     for opcion_caja in selectCaja.options:
+                        
+                        if not opcion_caja.get_attribute("disabled"):
+                            valoresSelectores[opcion_sucursal.text].append({"nombre": opcion_caja.text, "disponible": True})
 
-                        if opcion_caja.get_attribute("disabled"):
-                            # si la opcion no esta disponible
-                            continue
-
-                        # agregamos la opcion de caja a la variable de la sucursal
-                        valoresSelectores[f"{opcion_sucursal.text}"].append(opcion_caja.text)
+                        else:
+                            valoresSelectores[opcion_sucursal.text].append({"nombre": opcion_caja.text, "disponible": False})
 
         return valoresSelectores
 

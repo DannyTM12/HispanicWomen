@@ -35,7 +35,7 @@ def login():
             return "Hubo un error al iniciar el driver."
 
 
-    return render_template("login.html")
+    return render_template("acceso/login.html")
 
 @app.route('/caja', methods=["GET","POST"])
 def ingresar_caja():

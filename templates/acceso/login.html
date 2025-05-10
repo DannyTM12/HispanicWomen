@@ -81,10 +81,12 @@
             text-decoration: underline;
         }
     </style>
+
+    {% include "componentes/_bootstrap.html" %}
 </head>
 <body>
-    <div class="login-container">
-        <h2 class="login-title">Iniciar Sesión</h2>
+    <div class="container w-25">
+        <h2>Iniciar Sesión</h2>
         <form method="POST">
             <div class="form-group">
                 <label for="username">Usuario:</label>
@@ -98,9 +100,6 @@
                 <button type="submit">Entrar</button>
             </div>
         </form>
-        <div class="login-footer">
-            ¿No tienes una cuenta? <a href="#">Regístrate</a>
-        </div>
     </div>
 </body>
 </html>
