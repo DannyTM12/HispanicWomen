@@ -47,7 +47,7 @@ def ingresar_caja():
 
         if valorSelectores:
             WebDriverManager.close_driver()
-            return jsonify(valorSelectores)
+            return render_template("acceso/ingresar_caja.html", selectores=valorSelectores)
         else:
             return "No se encontro modal."
     else:
