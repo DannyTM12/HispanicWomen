@@ -118,14 +118,21 @@ def obtener_componentes_caja(driver):
                     selectCaja = Select(componenteSelectorCaja)
 
                     for opcion_caja in selectCaja.options:
-                        
+
                         if not opcion_caja.get_attribute("disabled"):
-                            valoresSelectores[opcion_sucursal.text].append({"nombre": opcion_caja.text, "disponible": True})
+                            # almacenamos unicamente valores disponibles
+                            valoresSelectores[opcion_sucursal.text].append({"nombre": opcion_caja.text})
 
-                        else:
-                            valoresSelectores[opcion_sucursal.text].append({"nombre": opcion_caja.text, "disponible": False})
 
-        return valoresSelectores
+        valoresSelectoresDisponibles = {}
+        # almacenamos las sucursales con opciones disponibles
+        for clave,opciones in valoresSelectores.items():
+            if len(opciones) > 0:
+                # si el arreglo de opciones es tmayor a 0
+                valoresSelectoresDisponibles[clave] = opciones
+
+
+        return valoresSelectoresDisponibles
 
     # no se encontro el modal para ingresar caja
     return None

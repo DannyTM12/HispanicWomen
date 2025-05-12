@@ -16,10 +16,14 @@ function llenarSelectorSucursal(){
   claves = Object.keys(selectoresJSON);
 
   claves.forEach(clave => {
-    const option = document.createElement('option');
-    option.value = clave;
-    option.textContent = clave;
-    selectorSucursal.appendChild(option);
+    
+    if(selectoresJSON[clave].length > 0){
+      const option = document.createElement('option');
+      option.value = clave;
+      option.textContent = clave;
+      selectorSucursal.appendChild(option);
+    }
+    
   });
 
   // Seleccionar la primera clave por defecto y actualizar el segundo selector
@@ -41,7 +45,6 @@ function actualizarSelectorCaja(claveSeleccionada) {
       const option = document.createElement('option');
       option.value = valores[index].nombre;
       option.textContent = valores[index].nombre;
-      option.disabled = !(valores[index].disponible) // true si esta disponible
       selectorCaja.appendChild(option);
     }
   }
