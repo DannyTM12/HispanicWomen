@@ -97,43 +97,46 @@ def obtener_componentes_caja(driver):
         # almacenamos los valores de los selectores
         valoresSelectores = {}
 
-        # encontramos el componente selector para sucursal
+        # obtenemos el componente selector sucursal
         componenteSelectorSucursal = encontrar_componentes.encontrarComponenteID(modalCaja, "selectSucursal")
 
-        # si encuentra el selector sucursal
         if componenteSelectorSucursal:
+            
+            # indicamos como selector sucursal
+            selectorSucursal = Select(componenteSelectorSucursal)
 
-            selectSucursal = Select(componenteSelectorSucursal)
+            for index_sucursal,opcion_sucursal in enumerate(selectorSucursal.options):
 
-            for index, opcion_sucursal in enumerate(selectSucursal.options):
+                valoresSelectores[opcion_sucursal.text] = {"index_sucursal": index_sucursal, "opciones": []}
 
-                valoresSelectores[opcion_sucursal.text] = []
+                # seleccionamos la sucursal actual
 
-                selectSucursal.select_by_index(index)
+                selectorSucursal.select_by_index(index_sucursal)
 
-                # buscamos el componente una vez seleccionado la sucursal
+                # obtenemos el componente selector caja
+
                 componenteSelectorCaja = encontrar_componentes.encontrarComponenteID(modalCaja, "selectCaja")
 
                 if componenteSelectorCaja:
 
-                    selectCaja = Select(componenteSelectorCaja)
+                    # indicamos componente como selector caja
 
-                    for index_caja, opcion_caja in enumerate(selectCaja.options):
+                    selectorCaja = Select(componenteSelectorCaja)
+
+                    for index_caja, opcion_caja in enumerate(selectorCaja.options):
 
                         if not opcion_caja.get_attribute("disabled"):
-                            # almacenamos unicamente valores disponibles
-                            valoresSelectores[opcion_sucursal.text].append({"index_sucursal": index, "nombre": opcion_caja.text, "index_caja": index_caja})
+                            valoresSelectores[opcion_sucursal.text]["opciones"].append({"caja": opcion_caja.text, "index_caja": index_caja})
 
+            # solo dejaremos las sucursales con opciones disponibles
+            valoresSelectoresDisponibles = {}
 
-        valoresSelectoresDisponibles = {}
-        # almacenamos las sucursales con opciones disponibles
-        for clave,opciones in valoresSelectores.items():
-            if len(opciones) > 0:
-                # si el arreglo de opciones es mayor a 0
-                valoresSelectoresDisponibles[clave] = opciones
+            for clave,valor in valoresSelectores.items():
 
+                if len(valor["opciones"]) > 0:
+                    valoresSelectoresDisponibles[clave] = valor
 
-        return valoresSelectoresDisponibles
+            return valoresSelectoresDisponibles
 
     # no se encontro el modal para ingresar caja
     return None
