@@ -60,7 +60,7 @@ def ingresar_caja():
 
         if valorSelectores:
             WebDriverManager.close_driver()
-            return valorSelectores
+            # return valorSelectores
             return render_template("acceso/ingresar_caja.html", selectores=valorSelectores)
         else:
             WebDriverManager.close_driver()

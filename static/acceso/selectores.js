@@ -13,47 +13,49 @@ function llenarSelectorSucursal(){
 
   selectorSucursal.innerHTML = '';
   // iteramos los elementos del JSON
-  claves = Object.keys(selectoresJSON);
 
-  claves.forEach(clave => {
-    
-    if(selectoresJSON[clave].length > 0){
+  for(const tienda in selectoresJSON){
+    if(selectoresJSON.hasOwnProperty(tienda)){
+
       const option = document.createElement('option');
-      option.value = selectoresJSON[clave].index_sucursal;
-      option.textContent = clave;
+      option.value = selectoresJSON[tienda].index_sucursal; 
+      option.textContent = tienda; // Mostramos la clave como texto
       selectorSucursal.appendChild(option);
-    }
-    
-  });
+
+    }// fin if selectoresJSON
+  }// fin for json
 
   // Seleccionar la primera clave por defecto y actualizar el segundo selector
-  if (claves.length > 0) {
-    actualizarSelectorCaja(claves[0]);
+  if (Object.keys(selectoresJSON).length > 0) {
+    const primeraTienda = Object.keys(selectoresJSON)[0];
+    actualizarSelectorCaja(primeraTienda);
   }
 }
 
 
-function actualizarSelectorCaja(claveSeleccionada) {
+function actualizarSelectorCaja(tiendaSeleccionada) {
   /* 
     Se actualizan los valores del selector caja
   */
-  selectorCaja.innerHTML = ''; // Limpiar opciones previas
-  if (selectoresJSON.hasOwnProperty(claveSeleccionada)) {
-    const valores = selectoresJSON[claveSeleccionada];
-    
-    for(index in valores){
-      const option = document.createElement('option');
-      option.value = valores[index].index_caja;
-      option.textContent = valores[index].nombre;
-      selectorCaja.appendChild(option);
+    selectorCaja.innerHTML = '';
+
+    if (selectoresJSON.hasOwnProperty(tiendaSeleccionada) && selectoresJSON[tiendaSeleccionada].opciones) {
+      selectoresJSON[tiendaSeleccionada].opciones.forEach(opcion => {
+        // Adaptamos esto según la estructura de tus objetos en 'opciones'
+        console.log(opcion)
+        const option = document.createElement('option');
+        option.value = opcion.index_caja; // Puedes usar el objeto completo como valor o una propiedad específica
+        option.textContent = opcion.caja ; // Mostrar 'caja' o 'producto' si existen, sino el objeto completo
+        selectorCaja.appendChild(option);
+      });
     }
-  }
 }
 
 
 selectorSucursal.addEventListener('change', function() {
-  const claveSeleccionada = this.value;
-  actualizarSelectorCaja(claveSeleccionada);
+  const tiendaSeleccionada = this.value;
+  actualizarSelectorCaja(tiendaSeleccionada);
 });
 
+// Llenar el primer selector al cargar la página
 llenarSelectorSucursal();
