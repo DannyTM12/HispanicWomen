@@ -12,6 +12,7 @@ import time
 from flask import jsonify
 
 from . import encontrar_componentes
+from clases.cls_driverwait import AtributoCambio
 
 # Configurar el navegador (usa Chrome, Edge o Firefox)
 from webdriver_manager.chrome import ChromeDriverManager
@@ -71,7 +72,7 @@ def ingresar_login(driver, username, password):
     """
     url_login = url + "/login"
     driver.get(url_login)
-    
+                             
     if revisar_credenciales(driver,username, password):
         return True
 
@@ -117,18 +118,18 @@ def obtener_componentes_caja(driver):
 
                     selectCaja = Select(componenteSelectorCaja)
 
-                    for opcion_caja in selectCaja.options:
+                    for index_caja, opcion_caja in enumerate(selectCaja.options):
 
                         if not opcion_caja.get_attribute("disabled"):
                             # almacenamos unicamente valores disponibles
-                            valoresSelectores[opcion_sucursal.text].append({"nombre": opcion_caja.text})
+                            valoresSelectores[opcion_sucursal.text].append({"index_sucursal": index, "nombre": opcion_caja.text, "index_caja": index_caja})
 
 
         valoresSelectoresDisponibles = {}
         # almacenamos las sucursales con opciones disponibles
         for clave,opciones in valoresSelectores.items():
             if len(opciones) > 0:
-                # si el arreglo de opciones es tmayor a 0
+                # si el arreglo de opciones es mayor a 0
                 valoresSelectoresDisponibles[clave] = opciones
 
 
@@ -136,6 +137,47 @@ def obtener_componentes_caja(driver):
 
     # no se encontro el modal para ingresar caja
     return None
+
+def validar_pin(driver, modalCaja, pin):
+    """
+        Verifica si el pin ingresado fue aceptado. Para esto, revisa
+        si el boton Validar cambia el estado a "disabled", para este 
+        caso retorna True, de lo contrario False.
+    """
+    
+    botonValidar = modalCaja.find_element(By.CLASS_NAME, "btn-secondary")
+
+    if botonValidar:
+        return "Funciona"
+    
+    return "No funciona."
+
+def validar_caja(driver, sucursal, caja, pin):
+    """
+        Se ingresa el registro de caja.
+    """
+    # buscar el modal para seleccionar caja
+    modalCaja = encontrar_componentes.encontrarModalCaja(driver)
+    # encontramos el componente selector para sucursal
+    componenteSelectorSucursal = encontrar_componentes.encontrarComponenteID(modalCaja, "selectSucursal")
+    # buscamos el componente una vez seleccionado la sucursal
+    componenteSelectorCaja = encontrar_componentes.encontrarComponenteID(modalCaja, "selectCaja")
+
+    # implementamos select para los componentes
+    selectSucursal = Select(componenteSelectorSucursal)
+    # seleccionamos la opcion sucursal
+    selectSucursal.select_by_index(sucursal)
+
+    selectCaja = Select(componenteSelectorCaja)
+    # seleccionamos la opcion caja
+    selectCaja.select_by_index(caja)
+
+
+    return validar_pin(driver, modalCaja, pin)
+
+    
+
+
 
 # -------------------------- Ejemplo de conexion -----------------------------------
     

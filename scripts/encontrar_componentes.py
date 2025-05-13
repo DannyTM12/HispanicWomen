@@ -20,7 +20,7 @@ def encontrarComponenteID(Padre,cadena_id):
         de lo contrario None.
     """
     try:
-        selector= Padre.find_element(By.ID, cadena_id)
-        return selector
+        componente = Padre.find_element(By.ID, cadena_id)
+        return componente
     except NoSuchElementException:
         return None

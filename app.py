@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from scripts.connections import connection_example, ingresar_login, obtener_componentes_caja
+from scripts.connections import connection_example, ingresar_login, obtener_componentes_caja, validar_caja
 
-from cls_webdriver import WebDriverManager
+from clases.cls_webdriver import WebDriverManager
 
 app = Flask(__name__)
 
@@ -43,12 +43,27 @@ def ingresar_caja():
     driver = WebDriverManager.get_driver()
 
     if driver:
+
+        if request.method == "POST":
+            # si se presiona submit 
+            
+            # obtenemos sucursal
+            sucursal = request.form.get("selectorSucursal")
+            # obtenemos caja
+            caja = request.form.get("selectorCaja")
+            # obtenemos pin
+            pin = request.form.get("inputPin")
+
+            return [sucursal, caja, pin]
+
         valorSelectores = obtener_componentes_caja(driver)
 
         if valorSelectores:
             WebDriverManager.close_driver()
+            return valorSelectores
             return render_template("acceso/ingresar_caja.html", selectores=valorSelectores)
         else:
+            WebDriverManager.close_driver()
             return "No se encontro modal."
     else:
         WebDriverManager.close_driver()

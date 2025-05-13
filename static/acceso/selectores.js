@@ -19,7 +19,7 @@ function llenarSelectorSucursal(){
     
     if(selectoresJSON[clave].length > 0){
       const option = document.createElement('option');
-      option.value = clave;
+      option.value = selectoresJSON[clave].index_sucursal;
       option.textContent = clave;
       selectorSucursal.appendChild(option);
     }
@@ -43,7 +43,7 @@ function actualizarSelectorCaja(claveSeleccionada) {
     
     for(index in valores){
       const option = document.createElement('option');
-      option.value = valores[index].nombre;
+      option.value = valores[index].index_caja;
       option.textContent = valores[index].nombre;
       selectorCaja.appendChild(option);
     }

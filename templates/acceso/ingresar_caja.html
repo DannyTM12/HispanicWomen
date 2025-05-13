@@ -11,12 +11,23 @@
     <h1>Registrar Caja</h1>
 
     <div class="container w-50">
-        
-        <select id="selectorSucursal" name="selectorSucursal" class="form-select">
-        </select>    
+        <form method="POST">
 
-        <select id="selectorCaja" name="selectorCaja" class="form-select">
-        </select>  
+            <label for="selectorSucursal" class="form-label">Seleccionar Sucursal</label>
+            <select id="selectorSucursal" name="selectorSucursal" class="form-select">
+                <!-- las opciones se cargan desde selectores.js -->
+            </select>    
+
+            <label for="selectorCAja" class="form-label">Seleccionar Caja</label>
+            <select id="selectorCaja" name="selectorCaja" class="form-select">
+                <!-- las opciones se cargan desde selectores.js -->
+            </select>  
+
+            <label for="inputPin" class="form-label">IngresarPin</label>
+            <input type="password" name="inputPin" id="inputPin" class="form-control">
+
+            <input type="submit" class="btn btn-primary" value="Ingresar">
+        </form>
     </div>
     
     <!-- div datos de selectores -->
