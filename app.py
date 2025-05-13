@@ -54,12 +54,11 @@ def ingresar_caja():
             # obtenemos pin
             pin = request.form.get("inputPin")
 
-            return [sucursal, caja, pin]
+            return validar_caja(driver, sucursal, caja, pin)
 
         valorSelectores = obtener_componentes_caja(driver)
 
         if valorSelectores:
-            WebDriverManager.close_driver()
             # return valorSelectores
             return render_template("acceso/ingresar_caja.html", selectores=valorSelectores)
         else:
