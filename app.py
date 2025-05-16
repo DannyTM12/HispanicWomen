@@ -59,11 +59,10 @@ def ingresar_caja():
         valorSelectores = obtener_componentes_caja(driver)
 
         if valorSelectores:
-            # return valorSelectores
             return render_template("acceso/ingresar_caja.html", selectores=valorSelectores)
         else:
             WebDriverManager.close_driver()
-            return "No se encontro modal."
+            return "No hay opciones de caja disponibles."
     else:
         WebDriverManager.close_driver()
         return "Hubo un error al obtener driver."

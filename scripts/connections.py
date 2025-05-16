@@ -125,8 +125,10 @@ def obtener_componentes_caja(driver):
 
                     for index_caja, opcion_caja in enumerate(selectorCaja.options):
 
-                        if not opcion_caja.get_attribute("disabled"):
-                            valoresSelectores[opcion_sucursal.text]["opciones"].append({"caja": opcion_caja.text, "index_caja": index_caja})
+                        if opcion_caja.get_attribute("disabled"):
+                            continue
+
+                        valoresSelectores[opcion_sucursal.text]["opciones"].append({"caja": opcion_caja.text, "index_caja": index_caja})
 
             # solo dejaremos las sucursales con opciones disponibles
             valoresSelectoresDisponibles = {}
