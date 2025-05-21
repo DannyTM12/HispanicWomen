@@ -153,7 +153,26 @@ def validar_pin(driver, modalCaja, pin):
     botonValidar = modalCaja.find_element(By.CLASS_NAME, "btn-secondary")
 
     if botonValidar:
-        return "Funciona"
+        # ingresamos pin
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "inlineFormInputGroup"))).send_keys(pin)
+        # presionamos boton validar
+        botonValidar.click()
+        # esperamos a que cambie el boton
+        # time.sleep(2)
+
+        # obtenemos botonVAlidar despues de cambios
+        cambioBotonValidar = modalCaja.find_element(By.CLASS_NAME, "btn-secondary")
+
+        # revisamos si el boton es disabled
+        if cambioBotonValidar:
+
+            if cambioBotonValidar.get_attribute("disabled"):
+                # obtenemos el boton para guardar
+                botonGuardar = modalCaja.find_elemnt(By.CLASS_NAME, "bg-button-general")
+                botonGuardar.click()
+                return "Validado"
+            else:
+                return "Pin invalido"
     
     return "No funciona."
 
