@@ -29,6 +29,7 @@ def iniciar_driver():
     try:
         options = webdriver.ChromeOptions()
         options.add_argument("--start-maximized")
+        options.add_argument("--disable-notifications")
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option(
@@ -36,7 +37,8 @@ def iniciar_driver():
             {
                 "credentials_enable_service": False,
                 "profile.password_manager_enabled": False,
-                "profile.default_content_setting_values.notifications": 2
+                "profile.default_content_setting_values.notifications": 2,
+                "profile.password_manager_leak_detection": False 
                 # with 2 should disable notifications
             },
         )
@@ -158,23 +160,33 @@ def validar_pin(driver, modalCaja, pin):
         # presionamos boton validar
         botonValidar.click()
         # esperamos a que cambie el boton
-        # time.sleep(2)
+        time.sleep(2)
 
-        # obtenemos botonVAlidar despues de cambios
-        cambioBotonValidar = modalCaja.find_element(By.CLASS_NAME, "btn-secondary")
+        # obtenemos botonValidar despues de cambios (success)
+        cambioBotonValidar = modalCaja.find_element(By.CLASS_NAME, "btn-success")
 
-        # revisamos si el boton es disabled
+        # revisamos si el boton se encuentra
         if cambioBotonValidar:
 
             if cambioBotonValidar.get_attribute("disabled"):
                 # obtenemos el boton para guardar
-                botonGuardar = modalCaja.find_elemnt(By.CLASS_NAME, "bg-button-general")
-                botonGuardar.click()
-                return "Validado"
+                botonesModal = modalCaja.find_elements(By.CLASS_NAME, "bg-button-general")
+
+                botonGuardar = None
+                for boton in botonesModal:
+                    if boton.text == "Guardar":
+                        botonGuardar = boton
+                        break
+
+                if botonGuardar:
+                    botonGuardar.click()
+                    return "Validado"
+                else:
+                    return "No se encontro boton Guardar"
             else:
                 return "Pin invalido"
     
-    return "No funciona."
+    return "No se pudo ingresar pin."
 
 def validar_caja(driver, sucursal, caja, pin):
     """
