@@ -54,7 +54,17 @@ def ingresar_caja():
             # obtenemos pin
             pin = request.form.get("inputPin")
 
-            return validar_caja(driver, sucursal, caja, pin)
+            # se obtiene un resultado y un mensaje
+            respuesta = validar_caja(driver, sucursal, caja, pin)
+
+            if respuesta["resultado"] == True:
+                driver.get("https://mujerhispana.maspunto.online/logout")
+                WebDriverManager.close_driver()
+                return respuesta["mensaje"]
+            else:
+                driver.get("https://mujerhispana.maspunto.online/logout")
+                WebDriverManager.close_driver()
+                return respuesta["mensaje"]
 
         valorSelectores = obtener_componentes_caja(driver)
 

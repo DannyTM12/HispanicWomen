@@ -148,7 +148,7 @@ def obtener_componentes_caja(driver):
 def validar_pin(driver, modalCaja, pin):
     """
         Verifica si el pin ingresado fue aceptado. Para esto, revisa
-        si el boton Validar cambia el estado a "disabled", para este 
+        si el boton Validar cambia el estado a "btn-success", para este 
         caso retorna True, de lo contrario False.
     """
     
@@ -169,24 +169,30 @@ def validar_pin(driver, modalCaja, pin):
         if cambioBotonValidar:
 
             if cambioBotonValidar.get_attribute("disabled"):
-                # obtenemos el boton para guardar
+                # obtenemos el botones del modal
                 botonesModal = modalCaja.find_elements(By.CLASS_NAME, "bg-button-general")
 
                 botonGuardar = None
+                # buscamos el boton que contenga el texto Guardar
                 for boton in botonesModal:
+
                     if boton.text == "Guardar":
                         botonGuardar = boton
                         break
 
                 if botonGuardar:
+                    # si hay boton guardar
                     botonGuardar.click()
-                    return "Validado"
+                    return {"resultado": True, "mensaje": "Credenciales validadas con exito!"}
+                
                 else:
-                    return "No se encontro boton Guardar"
+                    return {"resultado": False, "mensaje": "CNo se encontro boton Guardar."}
+            
+            # si el boton validar no esta deshabilitado
             else:
-                return "Pin invalido"
+                return {"resultado": False, "mensaje": "Pin incorrecto."}
     
-    return "No se pudo ingresar pin."
+    return {"resultado": False, "mensaje": "Hubo un problema al validar el pin. Intente de nuevo."}
 
 def validar_caja(driver, sucursal, caja, pin):
     """
@@ -208,8 +214,11 @@ def validar_caja(driver, sucursal, caja, pin):
     # seleccionamos la opcion caja
     selectCaja.select_by_index(caja)
 
-
+    # se obtiene el resultado de ingresar el pin y un mensaje
     return validar_pin(driver, modalCaja, pin)
+
+
+    
 
     
 
