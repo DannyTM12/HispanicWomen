@@ -1,9 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from scripts.connections import connection_example, ingresar_login, obtener_componentes_caja, validar_caja
 
 from clases.cls_webdriver import WebDriverManager
 
+from models import db
+
 app = Flask(__name__)
+
+# ------------------- Base de Datos ------------------
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+
+# Inicializa la instancia db con la aplicación Flask
+db.init_app(app)
 
 # --------------------- Aplicacion -------------------
 
@@ -78,4 +88,9 @@ def ingresar_caja():
         return "Hubo un error al obtener driver."
 
 if __name__ == '__main__':
+
+    with app.app_context():
+        db.create_all()
+        print("Tablas de la base de datos creadas o ya existentes.")
+
     app.run(port="9000",host="0.0.0.0",debug=True)
