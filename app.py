@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from scripts.connections import connection_example, ingresar_login, obtener_componentes_caja, validar_caja
+from scripts.connections import connection_example, ingresar_login, obtener_componentes_caja, validar_caja, liberar_caja
 
 from clases.cls_webdriver import WebDriverManager
 
@@ -68,12 +68,13 @@ def ingresar_caja():
             respuesta = validar_caja(driver, sucursal, caja, pin)
 
             if respuesta["resultado"] == True:
-                driver.get("https://mujerhispana.maspunto.online/logout")
-                WebDriverManager.close_driver()
-                return respuesta["mensaje"]
+                # driver.get("https://mujerhispana.maspunto.online/logout")
+                # WebDriverManager.close_driver()
+                # return respuesta["mensaje"]
+                return liberar_caja(driver)
             else:
-                driver.get("https://mujerhispana.maspunto.online/logout")
-                WebDriverManager.close_driver()
+                # driver.get("https://mujerhispana.maspunto.online/logout")
+                # WebDriverManager.close_driver()
                 return respuesta["mensaje"]
 
         valorSelectores = obtener_componentes_caja(driver)

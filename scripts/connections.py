@@ -82,7 +82,7 @@ def ingresar_login(driver, username, password):
         driver.quit()
         return False
 
-# ---------------------- Cajas --------------------------------------------
+# ---------------------- Ingresar Cajas --------------------------------------------
 def obtener_componentes_caja(driver):
     """
         Al iniciar sesion, se despliega un modal para la seleccion de 
@@ -218,9 +218,41 @@ def validar_caja(driver, sucursal, caja, pin):
     return validar_pin(driver, modalCaja, pin)
 
 
-    
 
+def elemnto_clickleable(driver, componente):
+    try:
+        componente.click()
+        return componente.get_attribute('class')
+    except Exception:
+        return None
     
+# ----------------- Liberar Cajas -------------------
+
+def liberar_caja(driver):
+    """
+        Con todo respeto, esta mierda bloquea la sesion de la caja si 
+        haces logout unicamente, entonces hay que liberar la caja
+        antes de cerrar la sesion del navegador.
+
+        La siguiente funcion, ubica el modal de cambio de caja, ingresa
+        el pin y presiona liberar caja.
+    """
+    
+    WebDriverWait(driver, 10).until(EC.url_contains("/home"))
+
+    # obtenemos el boton para cambiar caja
+    componenteBtnCambiarCaja = driver.find_elements(By.XPATH, "//nav//a")
+
+    if componenteBtnCambiarCaja:
+        clases = []
+
+        for componente in componenteBtnCambiarCaja:
+            clases.append(elemnto_clickleable(driver, componente))
+
+        return clases
+
+    return "No se encontro el elemento"
+
 
 
 
