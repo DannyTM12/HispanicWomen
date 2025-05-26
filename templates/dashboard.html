@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        h1 { color: #007bff; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 5px; }
+        .flash { padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .flash.success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .flash.info { background-color: #d1ecf1; color: #0c5460; border-color: #bee5eb; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 15px; }
+        nav a { text-decoration: none; color: #007bff; }
+        nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('root') }}">Inicio</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+        <h1>Bienvenido al Dashboard, {{ user.username }}!</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <p>Este es tu panel de control. Aquí puedes ver tu información:</p>
+        <ul>
+            <li><strong>Nombre de Usuario:</strong> {{ user.username }}</li>
+            <li><strong>Email:</strong> {{ user.email }}</li>
+            <li><strong>Perfiles:</strong>
+                <ul>
+                    {% for profile in user.profiles %}
+                        <li>{{ profile.name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
