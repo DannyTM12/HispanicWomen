@@ -4,9 +4,17 @@ from scripts.connections import connection_example, ingresar_login, obtener_comp
 
 from clases.cls_webdriver import WebDriverManager
 
+from models import Perfil
 from models import db
 
+# importar blueprints
+from endpoints.auth import auth_route
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'proyecto_de_mierda' 
+
+# registrar blueprints
+app.register_blueprint(auth_route)
 
 # ------------------- Base de Datos ------------------
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -93,5 +101,12 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         print("Tablas de la base de datos creadas o ya existentes.")
+
+        if not Perfil.query.first(): 
+            perfil_admin = Perfil(nombre='Admin', descripcion='Administrador del sistema')
+            perfil_analista = Perfil(nombre='Analista', descripcion='Interactua con dashboards y exporta extracciones')
+            db.session.add_all([perfil_admin, perfil_analista])
+            db.session.commit()
+            print("Perfiles iniciales creados.")
 
     app.run(port="9000",host="0.0.0.0",debug=True)
